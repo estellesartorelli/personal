@@ -2,6 +2,7 @@ import path from 'node:path';
 import { DATA_DIR, loadConfig, loadEnv } from './config.js';
 import { Store } from './store.js';
 import { SyncEngine } from './sync.js';
+import { importSeed } from './seed.js';
 
 loadEnv();
 
@@ -9,6 +10,7 @@ const command = process.argv[2];
 const arg = process.argv[3];
 
 const store = new Store(path.join(DATA_DIR, 'radar.json'));
+importSeed(store);
 const syncEngine = new SyncEngine({ store, config: loadConfig(), env: process.env });
 
 const commands = {

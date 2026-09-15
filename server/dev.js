@@ -4,11 +4,14 @@ import { DATA_DIR, loadConfig, loadEnv } from './config.js';
 import { Store } from './store.js';
 import { SyncEngine } from './sync.js';
 import { createApp } from './app.js';
+import { importSeed } from './seed.js';
 
 loadEnv();
 
 const config = loadConfig();
 const store = new Store(path.join(DATA_DIR, 'radar.json'));
+const seedResult = importSeed(store);
+if (seedResult.imported) console.log('[project-radar] seed imported:', JSON.stringify(seedResult));
 const syncEngine = new SyncEngine({ store, config, env: process.env });
 
 const handler = createApp({ store, syncEngine });

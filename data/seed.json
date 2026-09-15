@@ -1,0 +1,270 @@
+{
+  "projects": [
+    {
+      "id": "seed:product-hierarchy",
+      "source": "seed",
+      "name": "Product Hierarchy",
+      "status": "active",
+      "url": "https://app.notion.com/p/mistralai/Product-Hierarchy-Program-Hub-3ab6ba59a7fe80d9b75bd8220af72d26",
+      "description": "Linear initiative: Studio: Product hierarchy is clear, allows isolation, sharing, and clear governance. On track toward MAIS 2026.11 (Nov 30).",
+      "lastActivityAt": "2026-09-15T07:24:28.000Z",
+      "note": "Next: close Option 2 vs 3 (3 vs 4 levels), decide workspace-scoping of containers, share-button regression pass before GA. Weekly sync agenda in Notion; container prod enablement (observability, e2e, LIST, ArgoCD) held until ready. Sources: Notion Program Hub, Linear initiative, #project-product-hierarchies, dashboard/vortex PRs.",
+      "items": [
+        {
+          "id": "seed:ph:sharing",
+          "kind": "issue",
+          "title": "Sharing-permission mapping landed (share/share_with_org); doclib rules rolled out",
+          "url": "https://linear.app/mistral-ai/initiative/studio-product-hierarchy-is-clear-allows-isolation-sharing-and-clear-a50025a2b37a",
+          "state": "in progress",
+          "assignee": "Estelle Sartorelli",
+          "blocked": true,
+          "updatedAt": "2026-09-11T16:26:24.000Z"
+        },
+        {
+          "id": "seed:ph:hierarchy-direction",
+          "kind": "issue",
+          "title": "Hierarchy direction converging: Enterprise → org/ws → container (Option 2/3); AuthN without Workspace canceled",
+          "url": "https://linear.app/mistral-ai/initiative/studio-product-hierarchy-is-clear-allows-isolation-sharing-and-clear-a50025a2b37a",
+          "state": "in progress",
+          "assignee": "Pierre-Victor Chaumier",
+          "blocked": false,
+          "updatedAt": "2026-09-11T16:26:24.000Z"
+        },
+        {
+          "id": "seed:ph:container-service",
+          "kind": "issue",
+          "title": "Container Service in staging, prepping prod (Louis Sanna eng owner; AI-Registry integration ENG-1524 begun)",
+          "url": "https://linear.app/mistral-ai/issue/ENG-1524/integrate-ai-registry-primitives-with-container-service",
+          "state": "in progress",
+          "assignee": "Louis Sanna",
+          "blocked": false,
+          "updatedAt": "2026-09-14T10:48:04.000Z"
+        },
+        {
+          "id": "seed:ph:ux-followup",
+          "kind": "issue",
+          "title": "Follow up product hierarchy UX — file explorer UI idea, container-first vs primitive-first discovery",
+          "url": "https://linear.app/mistral-ai/project/follow-up-product-hierarchy-ux-b40686dd1f31",
+          "state": "backlog",
+          "assignee": "Mahedine",
+          "blocked": false,
+          "updatedAt": "2026-09-14T16:25:36.000Z"
+        },
+        {
+          "id": "seed:ph:pr-54311",
+          "kind": "commit",
+          "title": "PR: dashboard#54311 — hierarchy/spiceDB changes awaiting review",
+          "url": "https://github.com/mistralai/dashboard/pull/54311",
+          "state": null,
+          "assignee": "Geoffroy Mounier",
+          "blocked": false,
+          "updatedAt": "2026-09-14T12:40:14.000Z"
+        },
+        {
+          "id": "seed:ph:pr-53121",
+          "kind": "commit",
+          "title": "PR: dashboard#53121 — containers entries navigation (AI-Registry metadata fetch)",
+          "url": "https://github.com/mistralai/dashboard/pull/53121",
+          "state": null,
+          "assignee": "Geoffroy Mounier",
+          "blocked": false,
+          "updatedAt": "2026-09-11T11:56:51.000Z"
+        },
+        {
+          "id": "seed:ph:authz-guide",
+          "kind": "page",
+          "title": "Authorization Framework Guide for ProdEng published (PV)",
+          "url": "https://app.notion.com/p/mistralai/DRAFT-Authorization-Framework-Guide-for-ProdEng-teams-3d16ba59a7fe8098b033d81921444c5d",
+          "state": "done",
+          "assignee": "Pierre-Victor Chaumier",
+          "blocked": false,
+          "updatedAt": "2026-09-14T10:34:54.000Z"
+        },
+        {
+          "id": "seed:ph:slack-weekly-sync",
+          "kind": "page",
+          "title": "#project-product-hierarchies: weekly sync agenda up; Timothée/Lélio onboarding session scheduled",
+          "url": "https://mistralai.slack.com/archives/C0B63K3JNGG",
+          "state": null,
+          "assignee": null,
+          "blocked": false,
+          "updatedAt": "2026-09-14T15:38:30.000Z"
+        }
+      ]
+    },
+    {
+      "id": "seed:marquee-devportal",
+      "source": "seed",
+      "name": "Marquee DevPortal",
+      "status": "active",
+      "url": "https://app.notion.com/p/mistralai/Marquee-DevPortal-Program-Hub-abb6ba59a7fe8363a96d81e2f5fa5645",
+      "description": "Linear initiative: Marquee IDP v0 — internal developer portal. Internal Launch v0 shipped 1 Sep; 7 building-block projects; naming settled on 'DevPortal'.",
+      "lastActivityAt": "2026-09-15T09:37:04.000Z",
+      "note": "Next: land le-chat-web CD fix, operational test gate for std/prod-cd (last DoD item), usage-metrics scoping (DAU, catalog coverage, adoption funnel), fix 502s (JS heap exhaustion: ~39k-commit release ledger rewritten every ~6 min, single web replica, no PDB), inaccurate prod deployment reporting (SDLC-465). Teams view shipping (SDLC-505). Sources: Notion Program Hub, Linear initiative, #project-marquee, dashboard/vortex/mistral PRs.",
+      "items": [
+        {
+          "id": "seed:mq:cd",
+          "kind": "issue",
+          "title": "Continuous Deployment — quota & auth migrated to Marquee CD; le-chat-web under way (target Sep 18)",
+          "url": "https://linear.app/mistral-ai/project/marquee-continuous-deployment-f4ddcdfc774c",
+          "state": "in progress",
+          "assignee": "Maël Nison",
+          "blocked": false,
+          "updatedAt": "2026-09-15T08:54:35.000Z"
+        },
+        {
+          "id": "seed:mq:teams",
+          "kind": "issue",
+          "title": "Teams view (SDLC-505): index, team detail tabs, favorites, incident linkage",
+          "url": "https://linear.app/mistral-ai/issue/SDLC-505/ship-marquee-teams-view-index-team-detail-favorites",
+          "state": "backlog",
+          "assignee": "Cédric Patchane",
+          "blocked": false,
+          "updatedAt": "2026-09-14T16:33:27.000Z"
+        },
+        {
+          "id": "seed:mq:stability",
+          "kind": "issue",
+          "title": "502s from JS heap exhaustion — release ledger ~39k commits rewritten every ~6 min; single web replica, no PDB",
+          "url": "https://mistralai.slack.com/archives/C0BKDDHD25S/p1789062331125639",
+          "state": "todo",
+          "assignee": "Maël Nison",
+          "blocked": true,
+          "updatedAt": "2026-09-10T19:45:38.000Z"
+        },
+        {
+          "id": "seed:mq:reporting",
+          "kind": "issue",
+          "title": "Fix inaccurate Marquee production deployment reporting (SDLC-465)",
+          "url": "https://linear.app/mistral-ai/issue/SDLC-465/fix-inaccurate-marquee-production-deployment-reporting",
+          "state": "in progress",
+          "assignee": null,
+          "blocked": false,
+          "updatedAt": "2026-09-10T15:56:51.000Z"
+        },
+        {
+          "id": "seed:mq:adoption",
+          "kind": "issue",
+          "title": "Communication & Adoption — engineers use Marquee day-to-day; first support wave triaged in #project-marquee (target Sep 30)",
+          "url": "https://linear.app/mistral-ai/project/marquee-communication-and-adoption-2451ed6ddc41",
+          "state": "in progress",
+          "assignee": "Estelle Sartorelli",
+          "blocked": false,
+          "updatedAt": "2026-09-08T14:00:23.000Z"
+        },
+        {
+          "id": "seed:mq:completed-blocks",
+          "kind": "issue",
+          "title": "Completed & closed: Service Catalog, CI & Buildkite Migration, Service Governance, Incidents & Observability (→SRE), Security & CVE (→Security)",
+          "url": "https://linear.app/mistral-ai/initiative/marquee-idp-0152c6d97f98",
+          "state": "done",
+          "assignee": null,
+          "blocked": false,
+          "updatedAt": "2026-09-11T10:08:48.000Z"
+        },
+        {
+          "id": "seed:mq:pr-34467",
+          "kind": "commit",
+          "title": "PR: mistral#34467 — harmattan build-artifact marker ref for marquee",
+          "url": "https://github.com/mistralai/mistral/pull/34467",
+          "state": null,
+          "assignee": null,
+          "blocked": false,
+          "updatedAt": "2026-09-15T09:37:04.000Z"
+        },
+        {
+          "id": "seed:mq:pr-rootly",
+          "kind": "commit",
+          "title": "PRs: dashboard#52934 + vortex#75718 — Rootly sync cut over to marquee-tasks runner",
+          "url": "https://github.com/mistralai/dashboard/pull/52934",
+          "state": null,
+          "assignee": null,
+          "blocked": false,
+          "updatedAt": "2026-09-15T08:41:34.000Z"
+        }
+      ]
+    },
+    {
+      "id": "seed:team-data-access",
+      "source": "seed",
+      "name": "Improve Team Data & Access Foundations",
+      "status": "active",
+      "url": "https://app.notion.com/p/mistralai/Improve-Team-Data-Access-Foundations-Program-Hub-35f6ba59a7fe83f7896201fa23ff34e7",
+      "description": "Linear initiative: Improve Team Data & Access Foundations — Lucca as trustworthy source of truth; team creation/membership derived one-way into Google Groups, Slack, GitHub, Bitwarden, Notion, Linear, GetDX.",
+      "lastActivityAt": "2026-09-15T07:21:04.000Z",
+      "note": "Next: finish Lucca mismatch rollout (AFM-1074), Lucca quality-check hardening, Bitwarden hygiene by Oct 16, push downstream sync (Google Groups/Slack/GitHub teams) from manual to full automation, Teamstral unified identity graph. Sources: Notion Program Hub, Linear initiative (6 projects), #general/#project-eng-northstars/#it.",
+      "items": [
+        {
+          "id": "seed:tda:lucca-trustworthy",
+          "kind": "issue",
+          "title": "Make Lucca trustworthy — complete employee records, canonical team taxonomy, event-driven changes, daily data-quality checks (started Sep 11)",
+          "url": "https://linear.app/mistral-ai/project/make-lucca-trustworthy-e63c92ec36b4",
+          "state": "in progress",
+          "assignee": "Estelle Sartorelli",
+          "blocked": false,
+          "updatedAt": "2026-09-14T22:15:02.000Z"
+        },
+        {
+          "id": "seed:tda:mismatch-rollout",
+          "kind": "issue",
+          "title": "AFM-1074 — finish Lucca mismatch rollout (verify + delete live schedule + clean ops post)",
+          "url": "https://linear.app/mistral-ai/issue/AFM-1074/monday-finish-lucca-mismatch-rollout-verify-delete-live-schedule-clean",
+          "state": "backlog",
+          "assignee": null,
+          "blocked": false,
+          "updatedAt": "2026-09-14T22:15:02.000Z"
+        },
+        {
+          "id": "seed:tda:bitwarden",
+          "kind": "issue",
+          "title": "Bitwarden Hygiene — new conventions + cleanup (target Oct 16)",
+          "url": "https://linear.app/mistral-ai/project/bitwarden-hygiene-59a3c896d87f",
+          "state": "in progress",
+          "assignee": "Estelle Sartorelli",
+          "blocked": false,
+          "updatedAt": "2026-09-15T07:21:04.000Z"
+        },
+        {
+          "id": "seed:tda:downstream",
+          "kind": "issue",
+          "title": "Automate downstream team creation & membership from Lucca → Google Groups, Slack, GitHub, Bitwarden, Notion, Linear, GetDX",
+          "url": "https://linear.app/mistral-ai/project/automate-downstream-team-creation-and-membership-from-lucca-170613e3f555",
+          "state": "in progress",
+          "assignee": "Guilhem Gosset",
+          "blocked": false,
+          "updatedAt": "2026-09-11T09:45:51.000Z"
+        },
+        {
+          "id": "seed:tda:teamstral",
+          "kind": "issue",
+          "title": "Teamstral — unified people and identity graph / team directory (ex-Atrium)",
+          "url": "https://linear.app/mistral-ai/project/teamstral-51e4fbb1468a",
+          "state": "in progress",
+          "assignee": "Ewen Quimerc'h",
+          "blocked": false,
+          "updatedAt": "2026-09-11T09:45:43.000Z"
+        },
+        {
+          "id": "seed:tda:slack-handles",
+          "kind": "commit",
+          "title": "Team Slack handles synced with Lucca (@a-teamname) — auto-add new joiners to team channels; announced in #general",
+          "url": "https://mistralai.slack.com/archives/C06PR6NAESZ/p1788361839842479",
+          "state": "done",
+          "assignee": "Guilhem Gosset",
+          "blocked": false,
+          "updatedAt": "2026-09-02T17:10:39.000Z"
+        },
+        {
+          "id": "seed:tda:org-sync",
+          "kind": "issue",
+          "title": "Org Sync — completed: Lucca employees/departments synced into per-team Notion People/Teams DBs",
+          "url": "https://linear.app/mistral-ai/project/org-sync-c7d29c3274ac",
+          "state": "done",
+          "assignee": "Gurami Keretchashvili",
+          "blocked": false,
+          "updatedAt": "2026-09-07T08:27:52.000Z"
+        }
+      ]
+    }
+  ]
+}
