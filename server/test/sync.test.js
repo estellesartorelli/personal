@@ -6,7 +6,7 @@ import { Store } from '../store.js';
 import { SyncEngine, computeHealth } from '../sync.js';
 
 function tmpStore() {
-  return new Store(path.join(os.tmpdir(), `radar-test-${Date.now()}-${Math.random().toString(36).slice(2)}.db`));
+  return new Store(path.join(os.tmpdir(), `radar-test-${Date.now()}-${Math.random().toString(36).slice(2)}.json`));
 }
 
 test('computeHealth classifies projects', () => {
@@ -37,6 +37,21 @@ test('store upserts projects, saves notes, tracks active project', () => {
     assert.equal(store.getProject('manual:alpha').status, 'paused');
   } finally {
     store.close();
+  }
+});
+
+test('store persists to disk and reloads', () => {
+  const file = path.join(os.tmpdir(), `radar-persist-${Date.now()}.json`);
+  const s1 = new Store(file);
+  s1.upsertProject({ id: 'manual:keep', source: 'manual', name: 'Keep', status: 'active' });
+  s1.saveNote('manual:keep', 'next: write docs');
+  s1.close();
+  const s2 = new Store(file);
+  try {
+    const p = s2.getProject('Keep');
+    assert.equal(p.note, 'next: write docs');
+  } finally {
+    s2.close();
   }
 });
 

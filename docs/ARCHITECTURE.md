@@ -3,14 +3,14 @@
 ```
 ┌────────────┐     fetch/poll      ┌──────────────────┐
 │  Linear    │◄───────────────────┤                  │     upsert     ┌────────┐
-│  Notion    │                    │   SyncEngine     │◄───────────────►│ SQLite │
+│  Notion    │                    │   SyncEngine     │◄───────────────►│ JSON   │
 │  local git │───────────────────►│  (every 15 min)  │                │ store  │
 └────────────┘   projects/items   └────────┬─────────┘                └───┬────┘
                                             │                              │
                                    REST API │ /api/projects…               │
                                             ▼                              ▼
                                      ┌─────────────┐              ┌─────────────┐
-                                     │  Express    │◄─────────────│ Web UI      │
+                                     │  Node http   │◄─────────────│ Web UI      │
                                      │  server     │   JSON/HTTP  │ (vanilla JS)│
                                      └─────────────┘              └─────────────┘
 ```
@@ -18,13 +18,13 @@
 ## Components
 
 - **`server/config.js`** — loads `.env` and `data/config.json` (sources on/off, stale/quiet thresholds).
-- **`server/store.js`** — SQLite store (better-sqlite3). Tables: `projects`, `items`, `context_notes`, `state`.
+- **`server/store.js`** — JSON file store (`data/radar.json`), pure Node fs. Collections: `projects`, `items`, `notes`, `state`.
 - **`server/adapters/`** — one adapter per source, each normalizing data into a common shape:
   - `linear.js` — GraphQL API; projects + issues (state, assignee, blocked-by).
   - `notion.js` — REST API; shared pages become projects, `last_edited_time` is activity.
   - `localScan.js` — scans `SCAN_DIRS` for git repos; latest commit on non-default branches is activity.
 - **`server/sync.js`** — the sync engine: runs adapters, upserts to the store, prunes deleted projects, computes health. Failures per source are captured, not fatal.
-- **`server/app.js`** — Express REST API + static frontend.
+- **`server/app.js`** — REST API + static frontend on Node's built-in `http` server (no Express).
 - **`public/`** — dependency-free frontend (radar overview + project detail).
 
 ## Health model
@@ -41,7 +41,7 @@ Per project, recomputed on every sync and on writes:
 
 ## Context switching
 
-- Each project has a free-text **resume note** (`context_notes`) — what you were doing and the next step.
+- Each project has a free-text **resume note** (`notes`) — what you were doing and the next step.
 - The **active project** (`state.active_project`) powers the "Currently on" banner and the CLI `switch` command.
 - The dashboard polls every 60s and the server syncs every 15 min, so the view stays current.
 

@@ -8,7 +8,7 @@ loadEnv();
 const command = process.argv[2];
 const arg = process.argv[3];
 
-const store = new Store(path.join(DATA_DIR, 'radar.db'));
+const store = new Store(path.join(DATA_DIR, 'radar.json'));
 const syncEngine = new SyncEngine({ store, config: loadConfig(), env: process.env });
 
 const commands = {

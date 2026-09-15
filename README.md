@@ -1,12 +1,14 @@
 # project-radar
 
 A personal web dashboard for context switching: one always-up-to-date view across all of
-your projects (Linear, Notion, manual projects) plus per-project "resume where I left off" state.
+your projects (Linear, Notion, manual projects, local git repos) plus per-project "resume
+where I left off" state.
+
+**Zero dependencies** — pure Node.js standard library, no `npm install` needed.
 
 ## Setup
 
 ```bash
-npm install
 cp .env.example .env
 ```
 
@@ -16,21 +18,23 @@ Edit `.env`:
   [Linear → Settings → API](https://linear.app/settings/api)).
 - `NOTION_API_KEY` — optional, enables the Notion adapter (create an internal
   integration at [notion.so/my-integrations](https://www.notion.so/my-integrations)
-  and share the project pages/databases with it).
+  and share the project pages with it).
 - `SCAN_DIRS` — optional, comma-separated dirs to scan for git repos for local-activity.
-- If both API keys are absent, project-radar still runs with manually created projects.
+- If no API keys are set, project-radar still runs with manually created projects.
 
 ### Data sources config
 
-Optionally edit `data/config.json` to change which sources are enabled, which Notion
-databases to treat as projects, and which git branches to ignore when computing
-project activity. See `data/config.example.json`.
+Optionally edit `data/config.json` to change which sources are enabled and the
+stale/quiet thresholds. See `data/config.example.json`.
 
 ## Run
 
 ```bash
-npm run dev        # starts the dashboard on http://localhost:3131 and syncs every 15 min
+npm run dev        # or: node server/dev.js — dashboard at http://localhost:3131
 ```
+
+The server refreshes all sources on start and then every 15 minutes
+(`SYNC_INTERVAL_MINUTES`).
 
 CLI equivalents:
 
@@ -43,19 +47,19 @@ npm run switch -- <name>      # mark a project as active and show its resume not
 
 - **Radar view** (`/`): every project in one glance — status chips, blockers, stale
   counts, recent activity (issues from Linear, pages from Notion, commits from local
-  repos), grouped by health: Needs attention / Active / Quiet.
+  repos), grouped by health: Needs attention / Active / Stale / Quiet.
 - **Resume/context switch** (`/project/<name>`): write what you were doing and where you
   left off; the note plus the latest activity are always on top when you come back.
-  Pressing the active-project selector updates the "Currently on" banner instantly.
-- **Auto sync**: background refresh every 15 minutes (configurable) keeps the view
-  current; projects with nothing happening go "Quiet" after a chosen threshold.
+  The active project is shown in the "Currently on" banner.
+- **Auto sync**: background refresh keeps the view current; projects with nothing
+  happening go "Quiet" after a chosen threshold.
 - **Manual projects**: add any project with just a name and status, no external tool
   required.
 
 ## Architecture
 
-- `server/` — Node/Express server, SQLite store (`data/radar.db`), sync engine,
-  adapters (linear, notion, manual, local git scan), REST API.
+- `server/` — zero-dependency Node server, JSON file store (`data/radar.json`), sync
+  engine, adapters (linear, notion, manual, local git scan), REST API.
 - `public/` — zero-dependency vanilla JS frontend.
 - See `docs/ARCHITECTURE.md` for details.
 

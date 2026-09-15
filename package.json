@@ -9,14 +9,9 @@
   },
   "scripts": {
     "dev": "node server/dev.js",
-    "start": "NODE_ENV=production node server/dev.js",
+    "start": "node server/dev.js",
     "sync": "node server/cli.js sync",
     "switch": "node server/cli.js switch",
     "test": "node --test 'server/test/*.test.js'"
-  },
-  "dependencies": {
-    "better-sqlite3": "^11.5.0",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2"
   }
 }

@@ -1,15 +1,15 @@
-import express from 'express';
+import fs from 'node:fs';
 import path from 'node:path';
-import { ROOT_DIR } from './config.js';
+import { fileURLToPath } from 'node:url';
 import { computeHealth } from './sync.js';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+export const PUBLIC_DIR = path.join(__dirname, '..', 'public');
+
 const STATUS_VALUES = new Set(['active', 'paused', 'completed']);
+const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json' };
 
 export function createApp({ store, syncEngine }) {
-  const app = express();
-  app.use(express.json());
-  app.use(express.static(path.join(ROOT_DIR, 'public')));
-
   const recomputeHealthFor = (projectId) => {
     const p = store.getProject(projectId);
     if (!p) return null;
@@ -21,74 +21,128 @@ export function createApp({ store, syncEngine }) {
     return health;
   };
 
-  app.get('/api/projects', (req, res) => {
-    const projects = store.listProjects();
-    const activeId = store.getActiveProjectId();
-    res.json({ projects, activeProjectId: activeId, lastSyncedAt: store.getState('last_synced_at') });
-  });
+  const sendJson = (res, status, body) => {
+    const payload = JSON.stringify(body);
+    res.writeHead(status, { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(payload) });
+    res.end(payload);
+  };
 
-  app.get('/api/projects/:idOrName', (req, res) => {
-    const project = store.getProject(req.params.idOrName);
-    if (!project) return res.status(404).json({ error: 'project not found' });
-    res.json({ project });
-  });
-
-  app.post('/api/projects', (req, res) => {
-    const { name, status, description } = req.body ?? {};
-    if (!name || typeof name !== 'string' || !name.trim()) {
-      return res.status(400).json({ error: 'name is required' });
-    }
-    if (store.getProject(name.trim())) {
-      return res.status(409).json({ error: 'project already exists' });
-    }
-    const id = `manual:${name.trim().toLowerCase().replace(/\s+/g, '-')}`;
-    store.upsertProject({
-      id,
-      source: 'manual',
-      name: name.trim(),
-      status: STATUS_VALUES.has(status) ? status : 'active',
-      description: description ?? null,
-      url: null,
-      lastActivityAt: new Date().toISOString()
+  const readBody = (req) =>
+    new Promise((resolve, reject) => {
+      let data = '';
+      req.on('data', (c) => {
+        data += c;
+        if (data.length > 1e6) req.destroy();
+      });
+      req.on('end', () => {
+        if (!data) return resolve({});
+        try {
+          resolve(JSON.parse(data));
+        } catch {
+          reject(new Error('invalid JSON body'));
+        }
+      });
+      req.on('error', reject);
     });
-    recomputeHealthFor(id);
-    res.status(201).json({ project: store.getProject(id) });
-  });
 
-  app.patch('/api/projects/:idOrName', (req, res) => {
-    const project = store.getProject(req.params.idOrName);
-    if (!project) return res.status(404).json({ error: 'project not found' });
-    const { status, note } = req.body ?? {};
-    if (status !== undefined) {
-      if (!STATUS_VALUES.has(status)) {
-        return res.status(400).json({ error: `status must be one of ${[...STATUS_VALUES].join(', ')}` });
+  const serveStatic = (res, urlPath) => {
+    let rel = urlPath === '/' ? '/index.html' : urlPath;
+    const file = path.normalize(path.join(PUBLIC_DIR, rel));
+    if (!file.startsWith(PUBLIC_DIR)) {
+      res.writeHead(403);
+      return res.end('forbidden');
+    }
+    if (!fs.existsSync(file) || !fs.statSync(file).isFile()) {
+      res.writeHead(404);
+      return res.end('not found');
+    }
+    res.writeHead(200, { 'Content-Type': MIME[path.extname(file)] ?? 'application/octet-stream' });
+    res.end(fs.readFileSync(file));
+  };
+
+  return async function handler(req, res) {
+    const url = new URL(req.url, 'http://localhost');
+    const route = `${req.method} ${url.pathname}`;
+    try {
+      if (route === 'GET /api/projects') {
+        store.save();
+        return sendJson(res, 200, {
+          projects: store.listProjects(),
+          activeProjectId: store.getActiveProjectId(),
+          lastSyncedAt: store.getState('last_synced_at')
+        });
       }
-      store.setStatus(project.id, status);
+
+      const detail = route.match(/^GET \/api\/projects\/(.+)$/);
+      if (detail) {
+        const project = store.getProject(decodeURIComponent(detail[1]));
+        if (!project) return sendJson(res, 404, { error: 'project not found' });
+        return sendJson(res, 200, { project });
+      }
+
+      if (route === 'POST /api/projects') {
+        const body = await readBody(req);
+        const name = typeof body.name === 'string' ? body.name.trim() : '';
+        if (!name) return sendJson(res, 400, { error: 'name is required' });
+        if (store.getProject(name)) return sendJson(res, 409, { error: 'project already exists' });
+        const id = `manual:${name.toLowerCase().replace(/\s+/g, '-')}`;
+        store.upsertProject({
+          id,
+          source: 'manual',
+          name,
+          status: STATUS_VALUES.has(body.status) ? body.status : 'active',
+          description: body.description ?? null,
+          url: null,
+          lastActivityAt: new Date().toISOString()
+        });
+        recomputeHealthFor(id);
+        store.save();
+        return sendJson(res, 201, { project: store.getProject(id) });
+      }
+
+      const patch = route.match(/^PATCH \/api\/projects\/(.+)$/);
+      if (patch) {
+        const project = store.getProject(decodeURIComponent(patch[1]));
+        if (!project) return sendJson(res, 404, { error: 'project not found' });
+        const body = await readBody(req);
+        if (body.status !== undefined) {
+          if (!STATUS_VALUES.has(body.status)) {
+            return sendJson(res, 400, { error: `status must be one of ${[...STATUS_VALUES].join(', ')}` });
+          }
+          store.setStatus(project.id, body.status);
+        }
+        if (body.note !== undefined) {
+          if (typeof body.note !== 'string') return sendJson(res, 400, { error: 'note must be a string' });
+          store.saveNote(project.id, body.note);
+        }
+        recomputeHealthFor(project.id);
+        store.save();
+        return sendJson(res, 200, { project: store.getProject(project.id) });
+      }
+
+      const activate = route.match(/^POST \/api\/projects\/(.+)\/activate$/);
+      if (activate) {
+        const project = store.getProject(decodeURIComponent(activate[1]));
+        if (!project) return sendJson(res, 404, { error: 'project not found' });
+        store.setActiveProject(project.id);
+        store.save();
+        return sendJson(res, 200, { activeProjectId: project.id });
+      }
+
+      if (route === 'POST /api/sync') {
+        const result = await syncEngine.sync();
+        store.save();
+        return sendJson(res, 200, result);
+      }
+
+      if (req.method === 'GET' || req.method === 'HEAD') {
+        return serveStatic(res, url.pathname);
+      }
+
+      return sendJson(res, 404, { error: 'not found' });
+    } catch (err) {
+      console.error('[server]', err.message);
+      return sendJson(res, err.message === 'invalid JSON body' ? 400 : 500, { error: err.message });
     }
-    if (note !== undefined) {
-      if (typeof note !== 'string') return res.status(400).json({ error: 'note must be a string' });
-      store.saveNote(project.id, note);
-    }
-    recomputeHealthFor(project.id);
-    res.json({ project: store.getProject(project.id) });
-  });
-
-  app.post('/api/projects/:idOrName/activate', (req, res) => {
-    const project = store.getProject(req.params.idOrName);
-    if (!project) return res.status(404).json({ error: 'project not found' });
-    store.setActiveProject(project.id);
-    res.json({ activeProjectId: project.id });
-  });
-
-  app.post('/api/sync', async (req, res) => {
-    const result = await syncEngine.sync();
-    res.json(result);
-  });
-
-  app.use((err, req, res, next) => {
-    console.error('[server]', err);
-    res.status(500).json({ error: 'internal error' });
-  });
-
-  return app;
+  };
 }
