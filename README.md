@@ -24,8 +24,13 @@ Edit `.env`:
 
 ### Data sources config
 
-Optionally edit `data/config.json` to change which sources are enabled and the
-stale/quiet thresholds. See `data/config.example.json`.
+Optionally edit `data/config.json` to change which sources are enabled, the
+stale/quiet thresholds, and which items to sync. See `data/config.example.json`.
+
+- `linear.projectIds` — sync only these Linear projects (UUIDs). The example file
+  is prefilled with the projects behind the three program hubs.
+- `notion.pageIds` — sync only these Notion pages (the three program hub pages,
+  prefilled in the example).
 
 ## Run
 

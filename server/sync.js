@@ -28,10 +28,16 @@ export class SyncEngine {
 
   buildAdapters() {
     if (this.config.sources?.linear && this.env.LINEAR_API_KEY) {
-      this.linear = new LinearAdapter({ apiKey: this.env.LINEAR_API_KEY });
+      this.linear = new LinearAdapter({
+        apiKey: this.env.LINEAR_API_KEY,
+        projectIds: this.config.linear?.projectIds ?? []
+      });
     }
     if (this.config.sources?.notion && this.env.NOTION_API_KEY) {
-      this.notion = new NotionAdapter({ apiKey: this.env.NOTION_API_KEY });
+      this.notion = new NotionAdapter({
+        apiKey: this.env.NOTION_API_KEY,
+        pageIds: this.config.notion?.pageIds ?? []
+      });
     }
     if (this.config.sources?.localScan && this.localScan === null) {
       const scanDirs = (this.env.SCAN_DIRS ?? '').split(',').map((d) => d.trim()).filter(Boolean);

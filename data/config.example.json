@@ -1,13 +1,30 @@
 {
-  "sources": {
-    "linear": true,
-    "notion": true,
-    "localScan": true
+  "sources": { "linear": true, "notion": true, "localScan": true },
+  "linear": {
+    "projectIds": [
+      "96ff5533-c590-460e-ae5c-1d98eba94fa0",
+      "9d0e6f20-5834-4034-9c87-eff3321d36e0",
+      "a808ca4f-67d4-4e40-a52f-ee53969f47c9",
+      "3efe0754-c73b-4500-8940-4a23e8e29a19",
+      "03da2c69-4556-4eb7-b4a2-55c1de4721da",
+      "0a8445a8-af73-4132-96db-f73b0a71a2e9",
+      "510b2916-dec9-4e55-80ec-5c9db8ed98d3",
+      "89923d4a-f7ed-40e5-9b47-7e68461ff2bc",
+      "71a74d36-2350-4b57-aed1-e086afb01a74",
+      "db1424e0-17c1-4f58-b5b9-ba506d9d1798",
+      "6b8104b8-7647-470a-b08c-697903751c3a",
+      "67d71dad-4d4e-48a3-bb5e-47abe16aa29e",
+      "6ef7d24d-f2b7-4e0b-ab2e-4942614c6c9f"
+    ]
   },
-  "localScan": {
-    "ignoreBranches": ["main", "master", "develop", "staging"],
-    "maxDirsPerScan": 20
+  "notion": {
+    "pageIds": [
+      "3ab6ba59-a7fe-80d9-b75b-d8220af72d26",
+      "abb6ba59-a7fe-8363-a96d-81e2f5fa5645",
+      "35f6ba59-a7fe-83f7-8962-01fa23ff34e7"
+    ]
   },
+  "localScan": { "ignoreBranches": ["main", "master", "develop", "staging"], "maxDirsPerScan": 20 },
   "staleDays": 7,
   "quietDays": 21
 }

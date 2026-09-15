@@ -194,3 +194,42 @@ test('sync engine skips adapters when not configured', async () => {
     store.close();
   }
 });
+
+test('adapters sync only configured Linear projects and Notion pages', async () => {
+  const { LinearAdapter } = await import('../adapters/linear.js');
+  const { NotionAdapter } = await import('../adapters/notion.js');
+
+  const linearCalls = [];
+  const linear = new LinearAdapter({
+    apiKey: 'k',
+    projectIds: ['uuid-1', 'uuid-2'],
+    fetchImpl: async (url, opts) => {
+      const body = JSON.parse(opts.body);
+      linearCalls.push(body.query);
+      if (body.query.includes('query Project($id')) {
+        return { ok: true, json: async () => ({ data: { project: { id: body.variables.id, name: `P ${body.variables.id}`, state: 'started', description: null, url: `https://linear.app/${body.variables.id}`, updatedAt: '2026-09-15T00:00:00Z' } } }) };
+      }
+      return { ok: true, json: async () => ({ data: {} }) };
+    }
+  });
+  const projects = await linear.fetchProjects();
+  assert.equal(projects.length, 2);
+  assert.ok(projects.every((p) => p.id.startsWith('linear:uuid-')));
+  assert.ok(linearCalls.every((q) => q.includes('query Project($id')), 'no full-workspace query');
+
+  const notionCalls = [];
+  const notion = new NotionAdapter({
+    apiKey: 'k',
+    pageIds: ['page-1', 'page-2'],
+    fetchImpl: async (url) => {
+      notionCalls.push(url);
+      return {
+        ok: true,
+        json: async () => ({ id: url.split('/pages/')[1], url, last_edited_time: '2026-09-15T00:00:00Z', properties: { title: { title: [{ plain_text: `Page ${notionCalls.length}` }] } } })
+      };
+    }
+  });
+  const pages = await notion.fetchProjects();
+  assert.equal(pages.length, 2);
+  assert.ok(notionCalls.every((u) => /\/pages\/(page-1|page-2)$/.test(u)), 'no workspace-wide search');
+});

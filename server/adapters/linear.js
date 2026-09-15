@@ -16,6 +16,19 @@ const PROJECTS_QUERY = `
   }
 `;
 
+const PROJECT_BY_ID_QUERY = `
+  query Project($id: String!) {
+    project(id: $id) {
+      id
+      name
+      state
+      description
+      url
+      updatedAt
+    }
+  }
+`;
+
 const ISSUES_QUERY = `
   query Issues($projectId: String!, $after: String) {
     project(id: $projectId) {
@@ -36,8 +49,9 @@ const ISSUES_QUERY = `
 `;
 
 export class LinearAdapter {
-  constructor({ apiKey, fetchImpl = fetch } = {}) {
+  constructor({ apiKey, projectIds = [], fetchImpl = fetch } = {}) {
     this.apiKey = apiKey;
+    this.projectIds = projectIds;
     this.fetch = fetchImpl;
   }
 
@@ -61,14 +75,24 @@ export class LinearAdapter {
   }
 
   async fetchProjects() {
-    const projects = [];
-    let after = null;
-    do {
-      const data = await this.#gql(PROJECTS_QUERY, { after });
-      const conn = data.projects;
-      projects.push(...conn.nodes);
-      after = conn.pageInfo.hasNextPage ? conn.pageInfo.endCursor : null;
-    } while (after);
+    let nodes;
+    if (this.projectIds.length > 0) {
+      nodes = [];
+      for (const id of this.projectIds) {
+        const data = await this.#gql(PROJECT_BY_ID_QUERY, { id });
+        if (data.project) nodes.push(data.project);
+      }
+    } else {
+      nodes = [];
+      let after = null;
+      do {
+        const data = await this.#gql(PROJECTS_QUERY, { after });
+        const conn = data.projects;
+        nodes.push(...conn.nodes);
+        after = conn.pageInfo.hasNextPage ? conn.pageInfo.endCursor : null;
+      } while (after);
+    }
+    const projects = nodes;
     return projects.map((p) => ({
       id: `linear:${p.id}`,
       source: 'linear',
