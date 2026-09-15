@@ -117,6 +117,45 @@ test('sync engine with fake adapters populates projects and health', async () =>
   }
 });
 
+test('sync engine records per-source status and last sync date', async () => {
+  const store = tmpStore();
+  try {
+    const linear = {
+      fetchProjects: async () => [{ id: 'linear:p1', source: 'linear', name: 'Proj One', status: 'active', lastActivityAt: new Date().toISOString() }],
+      fetchIssues: async () => []
+    };
+    const engine = new SyncEngine({
+      store,
+      config: { sources: { linear: true } },
+      env: {},
+      adapters: { linear }
+    });
+    await engine.sync();
+    const statuses = store.listSourceStatuses();
+    const linearStatus = statuses.find((s) => s.id === 'linear');
+    assert.equal(linearStatus.status, 'ok');
+    assert.ok(linearStatus.syncedAt);
+    assert.equal(linearStatus.projects, 1);
+    const notionStatus = statuses.find((s) => s.id === 'notion');
+    assert.equal(notionStatus.status, 'unused');
+    assert.equal(notionStatus.projects, 0);
+
+    const failing = new SyncEngine({
+      store,
+      config: { sources: { linear: true } },
+      env: {},
+      adapters: { linear: { fetchProjects: async () => { throw new Error('boom'); }, fetchIssues: async () => [] } }
+    });
+    const results = await failing.sync();
+    assert.match(results.linear, /^error: boom$/);
+    const afterError = store.listSourceStatuses().find((s) => s.id === 'linear');
+    assert.equal(afterError.status.startsWith('error'), true);
+    assert.ok(afterError.syncedAt, 'last successful sync date is preserved on error');
+  } finally {
+    store.close();
+  }
+});
+
 test('sync engine prunes projects missing from source', async () => {
   const store = tmpStore();
   try {

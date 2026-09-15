@@ -41,6 +41,51 @@ header h1 { margin: 0; font-size: 20px; }
   border-bottom: 1px solid var(--border);
 }
 
+#layout { display: flex; min-height: calc(100vh - 60px); }
+
+#sources-panel {
+  width: 220px;
+  flex-shrink: 0;
+  padding: 20px 16px;
+  border-right: 1px solid var(--border);
+  background: #11151c;
+}
+
+.panel-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin: 0 0 10px;
+}
+
+#sources-list { list-style: none; margin: 0; padding: 0; }
+#sources-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  margin-bottom: 4px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+}
+#sources-list li.status-ok { border-color: rgba(63, 185, 80, 0.4); background: rgba(63, 185, 80, 0.08); }
+#sources-list li.status-error { border-color: rgba(248, 81, 73, 0.4); background: rgba(248, 81, 73, 0.08); }
+#sources-list li.status-unused { opacity: 0.55; }
+
+.source-head { display: flex; align-items: center; gap: 6px; }
+.source-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.source-dot.status-ok { background: var(--green); }
+.source-dot.status-error { background: var(--red); }
+.source-dot.status-unused { background: var(--muted); }
+.source-name { font-size: 13px; font-weight: 600; }
+.source-meta { font-size: 11px; color: var(--muted); padding-left: 14px; }
+.source-projects { font-size: 11px; color: var(--accent); padding-left: 14px; }
+
+#sources-note { font-size: 11px; margin-top: 12px; line-height: 1.4; }
+
+#content { flex: 1; min-width: 0; }
+
 main { padding: 24px; max-width: 1100px; margin: 0 auto; }
 
 .hidden { display: none !important; }

@@ -125,6 +125,26 @@ export class Store {
     return this.data.state[key] ?? null;
   }
 
+  listSourceStatuses() {
+    const sources = [
+      { id: 'seed', label: 'seed data' },
+      { id: 'linear', label: 'Linear' },
+      { id: 'notion', label: 'Notion' },
+      { id: 'localScan', label: 'local repos' }
+    ];
+    return sources.map(({ id, label }) => {
+      const st = this.getState(`source_${id}`) ?? (id === 'seed' && this.getState('seed_imported_at') ? { status: 'ok', syncedAt: this.getState('seed_imported_at') } : null);
+      const usedBy = Object.values(this.data.projects).filter((p) => p.source === (id === 'localScan' ? 'manual' : id)).length;
+      return {
+        id,
+        label,
+        status: st?.status ?? (usedBy > 0 ? 'ok' : 'unused'),
+        syncedAt: st?.syncedAt ?? null,
+        projects: usedBy
+      };
+    });
+  }
+
   setState(key, value) {
     this.data.state[key] = value;
   }

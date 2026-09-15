@@ -14,11 +14,20 @@
     <button id="sync-btn" class="btn">Sync now</button>
   </div>
 </header>
+<div id="layout">
+  <aside id="sources-panel">
+    <h2 class="panel-title">Sources</h2>
+    <ul id="sources-list"></ul>
+    <p id="sources-note" class="muted"></p>
+  </aside>
+  <div id="content">
 <nav id="currently-on" class="banner hidden">
   <span>Currently on: <strong id="current-name"></strong></span>
   <span id="current-note" class="muted"></span>
 </nav>
 <main id="view"></main>
+  </div>
+</div>
 <div id="toast" class="toast hidden"></div>
 <script src="/app.js"></script>
 </body>

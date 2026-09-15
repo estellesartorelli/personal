@@ -97,6 +97,16 @@ export class SyncEngine {
     }
   }
 
+  #recordSource(name, status) {
+    const key = `source_${name}`;
+    const prev = this.store.getState(key);
+    this.store.setState(key, {
+      status,
+      syncedAt: status === 'ok' ? new Date().toISOString() : prev?.syncedAt ?? null
+    });
+    return status;
+  }
+
   #recomputeHealth() {
     const nowMs = this.now();
     const staleDays = this.config.staleDays ?? 7;
@@ -120,25 +130,25 @@ export class SyncEngine {
       if (this.linear) {
         try {
           await this.#syncLinear();
-          results.linear = 'ok';
+          results.linear = this.#recordSource('linear', 'ok');
         } catch (err) {
-          results.linear = `error: ${err.message}`;
+          results.linear = this.#recordSource('linear', `error: ${err.message}`);
         }
       }
       if (this.notion) {
         try {
           await this.#syncNotion();
-          results.notion = 'ok';
+          results.notion = this.#recordSource('notion', 'ok');
         } catch (err) {
-          results.notion = `error: ${err.message}`;
+          results.notion = this.#recordSource('notion', `error: ${err.message}`);
         }
       }
       if (this.localScan) {
         try {
           await this.#syncLocalScan();
-          results.localScan = 'ok';
+          results.localScan = this.#recordSource('localScan', 'ok');
         } catch (err) {
-          results.localScan = `error: ${err.message}`;
+          results.localScan = this.#recordSource('localScan', `error: ${err.message}`);
         }
       }
       this.#recomputeHealth();

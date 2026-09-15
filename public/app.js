@@ -245,6 +245,36 @@ function renderDetail(project) {
   view.appendChild(list);
 }
 
+const SOURCE_LABEL = {
+  linear: 'Linear',
+  notion: 'Notion',
+  localScan: 'local repos',
+  seed: 'seed data'
+};
+
+function renderSources(sources, lastSyncedAt) {
+  const list = $('#sources-list');
+  list.innerHTML = '';
+  if (!sources) return;
+  for (const s of sources) {
+    const li = document.createElement('li');
+    li.className = `status-${s.status}`;
+    const statusText = s.status === 'ok' ? `synced ${timeAgo(s.syncedAt)}` : s.status === 'error' ? s.error || 'error' : s.status;
+    li.innerHTML = `
+      <span class="source-head">
+        <span class="source-dot status-${s.status}"></span>
+        <span class="source-name">${esc(s.label || SOURCE_LABEL[s.id] || s.id)}</span>
+      </span>
+      <span class="source-meta">${esc(statusText)}</span>
+      ${s.projects > 0 ? `<span class="source-projects">${s.projects} project${s.projects > 1 ? 's' : ''}</span>` : ''}
+    `;
+    list.appendChild(li);
+  }
+  $('#sources-note').textContent = lastSyncedAt
+    ? `Last sync: ${new Date(lastSyncedAt).toLocaleString()}`
+    : 'No sync yet — sources show seed/import state.';
+}
+
 async function renderRoute() {
   const hash = location.hash || '#/';
   const detailMatch = hash.match(/^#\/project\/(.+)$/);
@@ -264,6 +294,7 @@ async function renderRoute() {
   state.projects = data.projects;
   state.activeProjectId = data.activeProjectId;
   renderRadar(data);
+  renderSources(data.sources, data.lastSyncedAt);
   const last = data.lastSyncedAt ? `synced ${timeAgo(data.lastSyncedAt)}` : 'never synced';
   $('#last-synced').textContent = last;
 }

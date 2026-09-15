@@ -69,7 +69,8 @@ export function createApp({ store, syncEngine }) {
         return sendJson(res, 200, {
           projects: store.listProjects(),
           activeProjectId: store.getActiveProjectId(),
-          lastSyncedAt: store.getState('last_synced_at')
+          lastSyncedAt: store.getState('last_synced_at'),
+          sources: store.listSourceStatuses()
         });
       }
 
