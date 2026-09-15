@@ -1,0 +1,13 @@
+{
+  "sources": {
+    "linear": true,
+    "notion": true,
+    "localScan": true
+  },
+  "localScan": {
+    "ignoreBranches": ["main", "master", "develop", "staging"],
+    "maxDirsPerScan": 20
+  },
+  "staleDays": 7,
+  "quietDays": 21
+}

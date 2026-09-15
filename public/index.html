@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>project-radar</title>
+<link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+<header>
+  <h1>📡 project-radar</h1>
+  <div class="header-right">
+    <span id="last-synced" class="muted"></span>
+    <button id="sync-btn" class="btn">Sync now</button>
+  </div>
+</header>
+<nav id="currently-on" class="banner hidden">
+  <span>Currently on: <strong id="current-name"></strong></span>
+  <span id="current-note" class="muted"></span>
+</nav>
+<main id="view"></main>
+<div id="toast" class="toast hidden"></div>
+<script src="/app.js"></script>
+</body>
+</html>

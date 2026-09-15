@@ -1,0 +1,5 @@
+node_modules/
+.env
+data/radar.db
+data/radar.db-*
+data/config.json
