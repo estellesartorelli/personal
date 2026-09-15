@@ -17,7 +17,7 @@ Edit `.env`:
 - `LINEAR_API_KEY` — optional, enables the Linear adapter (create a key at
   [Linear → Settings → API](https://linear.app/settings/api)).
 - `NOTION_API_KEY` — optional, enables the Notion adapter (create an internal
-  integration at [notion.so/my-integrations](https://www.notion.so/my-integrations)
+  integration at [notion.so/profile/integrations](https://www.notion.so/profile/integrations)
   and share the project pages with it).
 - `SCAN_DIRS` — optional, comma-separated dirs to scan for git repos for local-activity.
 - If no API keys are set, project-radar still runs with manually created projects.
